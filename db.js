@@ -3,11 +3,11 @@ const mysql = require('mysql2');
 // Crio a conexão com o banco
 const connection = mysql.createConnection({
     host: 'localhost',
-    //host: 'insupport.com.br',
+    //host: 'insupport.com.br',    *** Teste que estou fazendo com um banco de dados na internet (Hostgator)
     user: 'root',
     //user: 'albe0624_agendamentos',
     password: 'MySQL@bd', 
-    //database: 'albe0624_sus_agendamentos'
+    //database: 'albe0624_sus_agendamentos'   *** Teste que estou fazendo com um banco de dados na internet (Hostgator)
     database: 'sus_agendamentos'
 });
 
