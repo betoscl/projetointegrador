@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Agendamento SUS</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #f0f2f5; display: flex; align-items: center; justify-content: center; height: 100vh; }
+        .card-login { width: 100%; max-width: 400px; padding: 20px; border-radius: 10px; box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .logo-sus { color: #005c97; font-weight: bold; text-align: center; margin-bottom: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="card card-login bg-white">
+        <div class="card-body">
+            <h3 class="logo-sus">🏥 Agendamento SUS</h3>
+            <p class="text-center text-muted">Acesse sua conta</p>
+
+            <div id="alertaErro" class="alert alert-danger d-none" role="alert">
+                </div>
+            
+            <form id="formLogin">
+                <div class="mb-3">
+                    <label for="email" class="form-label">E-mail</label>
+                    <input type="email" class="form-control" id="email" name="email" required>
+                </div>
+                <div class="mb-3">
+                    <label for="senha" class="form-label">Senha</label>
+                    <input type="password" class="form-control" id="senha" name="senha" required>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label">Eu sou:</label>
+                    <div class="d-flex gap-3">
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tipo" id="paciente" value="paciente" checked>
+                            <label class="form-check-label" for="paciente">Paciente</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="radio" name="tipo" id="funcionario" value="funcionario">
+                            <label class="form-check-label" for="funcionario">Funcionário</label>
+                        </div>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Entrar</button>
+                <div class="text-center">
+                    <a href="/cadastro.html" class="text-decoration-none small">Não tem conta? Cadastre-se como Paciente</a>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('formLogin');
+        const alerta = document.getElementById('alertaErro');
+
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Impede a página de recarregar
+
+            // Coleto os dados dos inputs do formulário
+            const formData = {
+                email: document.getElementById('email').value,
+                senha: document.getElementById('senha').value,
+                tipo: document.querySelector('input[name="tipo"]:checked').value
+            };
+
+            try {
+                // Envia para o backend
+                const response = await fetch('/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(formData)
+                });
+
+                const data = await response.json(); // Lê a resposta JSON do servidor
+
+                if (data.success) {
+                    // Se deu certo, redireciona para o dashboard
+                    window.location.href = data.redirectUrl;
+                } else {
+                    // Se deu erro, mostra o alerta e a mensagem
+                    alerta.textContent = data.message;
+                    alerta.classList.remove('d-none'); // Remove a classe que esconde o alerta
+                }
+
+            } catch (error) {
+                console.error('Erro:', error);
+                alerta.textContent = "Erro ao conectar com o servidor.";
+                alerta.classList.remove('d-none');
+            }
+        });
+    </script>
+</body>
+</html>
